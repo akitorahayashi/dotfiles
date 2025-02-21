@@ -165,7 +165,7 @@ setup_vscode() {
     echo "VS Code のセットアップを開始します..."
 
     if ! command -v code &>/dev/null; then
-        echo "VS Code がインストールされていません。セットアップをスキップします。"
+        echo "VS Code がインストールされていません。スキップします。"
         return
     fi
 
@@ -180,8 +180,23 @@ setup_vscode() {
         done < "$HOME/dotfiles/vscode/extensions.txt"
     fi
 
+    # Homebrew でインストールされた Flutter のパスを取得
+    FLUTTER_VERSION=$(ls /opt/homebrew/Caskroom/flutter | sort -rV | head -n 1)
+    FLUTTER_SDK_PATH="/opt/homebrew/Caskroom/flutter/${FLUTTER_VERSION}/flutter"
+
+    if [[ -d "$FLUTTER_SDK_PATH" ]]; then
+        VSCODE_SETTINGS="$HOME/dotfiles/vscode/settings.json"
+        
+        echo "Flutter SDK のパスを VS Code に適用中..."
+        jq --arg path "$FLUTTER_SDK_PATH" '.["dart.flutterSdkPath"] = $path' "$VSCODE_SETTINGS" > "${VSCODE_SETTINGS}.tmp" && mv "${VSCODE_SETTINGS}.tmp" "$VSCODE_SETTINGS"
+        echo "✅ Flutter SDK パスを $FLUTTER_SDK_PATH に設定しました！"
+    else
+        echo "⚠ Homebrew でインストールされた Flutter SDK が見つかりませんでした。"
+    fi
+
     echo "✅ VS Code のセットアップが完了しました！"
 }
+
 
 # VSCode の設定自動同期のセットアップ
 start_vscode_sync() {
