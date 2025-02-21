@@ -13,13 +13,7 @@ for dir in "$ANDROID_HOME/cmdline-tools/latest/bin" "$ANDROID_HOME/tools/bin" "$
     fi
 done
 
-# Flutter のパスを設定
+# Homebrew でインストールされた Flutter のパスを設定
 if [[ -x "/opt/homebrew/bin/flutter" ]]; then
-    flutter_path="/opt/homebrew/bin"
-elif [[ -d "$HOME/flutter/bin" ]]; then
-    flutter_path="$HOME/flutter/bin"
-fi
-
-if [[ -n "$flutter_path" && ":$PATH:" != *":$flutter_path:"* ]]; then
-    export PATH="$flutter_path:$PATH"
+    export PATH="/opt/homebrew/bin:$PATH"
 fi
