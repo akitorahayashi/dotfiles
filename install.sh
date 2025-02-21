@@ -102,11 +102,6 @@ install_brewfile() {
 
     echo "Homebrew パッケージの状態を確認中..."
 
-    # Homebrew に記録されているパッケージをクリーンアップ（Brewfile にないものは削除）
-    echo "Brewfile に記載されていないパッケージを削除中..."
-    brew bundle cleanup --file="$brewfile_path" --force
-    echo "不要なパッケージを削除しました ✅"
-
     # Brewfile からインストールすべきパッケージを1行ずつ処理
     while IFS= read -r line; do
         # コメントや空行をスキップ
@@ -198,23 +193,6 @@ setup_vscode() {
 }
 
 
-# VSCode の設定自動同期のセットアップ
-start_vscode_sync() {
-    echo "VS Code の設定同期を開始します..."
-
-    # スクリプトが実行可能になっているか確認
-    chmod +x "$HOME/dotfiles/sync_vscode.sh"
-
-    # 既に実行されている場合はスキップ
-    if pgrep -f "fswatch.*settings.json" > /dev/null; then
-        echo "VS Code の同期スクリプトは既に実行中です。スキップします。"
-    else
-        nohup "$HOME/dotfiles/sync_vscode.sh" > /dev/null 2>&1 &
-        echo "✅ VS Code の設定同期をバックグラウンドで開始しました！"
-    fi
-}
-
-
 # 実行順序
 install_xcode_tools
 install_rosetta
@@ -229,7 +207,6 @@ setup_shell_config
 install_brewfile
 setup_flutter
 setup_vscode
-start_vscode_sync
 
 end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))
