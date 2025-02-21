@@ -170,8 +170,22 @@ setup_vscode() {
     ln -sf "$HOME/dotfiles/vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
 
     if [[ -f "$HOME/dotfiles/vscode/extensions.txt" ]]; then
+        echo "🔄 VS Code 拡張機能のインストールを確認中..."
+        
+        # 既にインストールされている拡張機能の一覧を取得
+        installed_extensions=$(code --list-extensions)
+
         while IFS= read -r extension; do
-            code --install-extension "$extension" --force
+            # 空行やコメント行をスキップ
+            [[ -z "$extension" || "$extension" =~ ^# ]] && continue
+
+            # インストール済みの拡張機能かチェック
+            if echo "$installed_extensions" | grep -q "^$extension\$"; then
+                echo "✅ $extension はすでにインストール済み"
+            else
+                echo "➕ $extension をインストール中..."
+                code --install-extension "$extension" --force
+            fi
         done < "$HOME/dotfiles/vscode/extensions.txt"
     fi
 
@@ -191,6 +205,7 @@ setup_vscode() {
 
     echo "✅ VS Code のセットアップが完了しました！"
 }
+
 
 # Xcode の設定
 setup_xcode() {
