@@ -91,20 +91,53 @@ setup_shell_config() {
     echo "シェルの設定の適用完了 ✅"
 }
 
+# Brewfile に記載されているパッケージをインストール
 install_brewfile() {
     local brewfile_path="$HOME/dotfiles/Brewfile"
-    if [[ -f "$brewfile_path" ]]; then
-        echo "Homebrew パッケージの状態を確認中..."
-        if ! brew bundle check --file="$brewfile_path" > /dev/null 2>&1; then
-            echo "Homebrew パッケージをインストール中..."
-            brew bundle --file="$brewfile_path"
-            echo "Homebrew パッケージのインストール完了 ✅"
-        else
-            echo "すべての Homebrew パッケージはすでにインストールされています ✅"
-        fi
-    else
+    
+    if [[ ! -f "$brewfile_path" ]]; then
         echo "Warning: $brewfile_path が見つかりません。スキップします。"
+        return
     fi
+
+    echo "Homebrew パッケージの状態を確認中..."
+
+    # Homebrew に記録されているパッケージをクリーンアップ（Brewfile にないものは削除）
+    echo "Brewfile に記載されていないパッケージを削除中..."
+    brew bundle cleanup --file="$brewfile_path" --force
+    echo "不要なパッケージを削除しました ✅"
+
+    # Brewfile からインストールすべきパッケージを1行ずつ処理
+    while IFS= read -r line; do
+        # コメントや空行をスキップ
+        [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
+
+        # "brew" または "cask" で始まる行をパース
+        if [[ "$line" =~ ^brew\ \"(.*)\"$ ]]; then
+            package_name="${BASH_REMATCH[1]}"
+            
+            # `brew list` で確認し、未インストールならインストール
+            if ! brew list --formula | grep -q "^$package_name\$"; then
+                echo "➕ $package_name をインストール中..."
+                brew install "$package_name"
+            else
+                echo "✔ $package_name はすでにインストールされています"
+            fi
+
+        elif [[ "$line" =~ ^cask\ \"(.*)\"$ ]]; then
+            package_name="${BASH_REMATCH[1]}"
+            
+            # `brew list --cask` で確認し、未インストールならインストール
+            if ! brew list --cask | grep -q "^$package_name\$"; then
+                echo "➕ $package_name をインストール中..."
+                brew install --cask "$package_name"
+            else
+                echo "✔ $package_name はすでにインストールされています"
+            fi
+        fi
+    done < "$brewfile_path"
+
+    echo "Homebrew パッケージの適用が完了しました ✅"
 }
 
 # Flutter のセットアップ（Android SDK のパスを適切に設定）
