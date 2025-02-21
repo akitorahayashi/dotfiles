@@ -15,7 +15,24 @@ cd ~/dotfiles
 ```sh
 chmod +x install.sh
 ```
-## 3. Run the Setup Script
+## 3. Update Git Configuration
+Before running the setup script, you need to update the Git configuration with your own name and email.
+
+Open `.gitconfig` using a text editor:
+
+Modify the following lines with your own information:
+```ini
+[user]
+    name = YOUR_NAME
+    email = YOUR_EMAIL
+
+[github]
+    user = YOUR_GITHUB_USERNAME
+    
+[core]
+    excludesfile = /Users/YOUR_USERNAME/.gitignore_global
+```
+## 4. Run the Setup Script
 ```sh
 ./install.sh
 ```
@@ -24,7 +41,8 @@ This will automatically start the environment setup process:
 - Installs Rosetta 2 if running on Apple Silicon (M1/M2).
 - Installs Xcode Command Line Tools if they are missing.
 - Installs apps and CLI tools specified in the `Brewfile`.
-## 4. Create and Register an SSH Key for GitHub
+- applies macOS system settings from `setup_mac_settings.sh`.
+## 5. Create and Register an SSH Key for GitHub
 If no SSH key exists, the script will generate one.
 You need to add the public key to GitHub manually.
 ```sh
@@ -39,7 +57,7 @@ If you see the following message, SSH authentication was successful:
 ```sh
 Hi akitorahayashi! You've successfully authenticated, but GitHub does not provide shell access.
 ```
-## 5. Reload the Shell
+## 6. Reload the Shell
 After setup is complete, reload the shell to apply the changes.
 ```sh
 exec $SHELL -l
@@ -76,3 +94,11 @@ If Flutter is installed via Homebrew, it will execute
 ## 7. SSH Key Generation and Configuration
 Generates a new SSH key (`id_ed25519`) if none exists.
 Adding the public key to GitHub allows passwordless `git push` operations.
+
+## 8. macOS System Settings Application  
+Applies system settings from `setup_mac_settings.sh`, configuring:  
+- Trackpad & mouse speed  
+- Keyboard repeat rate  
+- Dock preferences (size, auto-hide, hot corners)  
+- Finder settings (path bar, status bar, hidden files visibility)  
+- Screenshot save location  
