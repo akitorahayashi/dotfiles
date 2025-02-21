@@ -2,6 +2,7 @@ brew "git"
 brew "gh"
 brew "cocoapods"
 brew "zsh"
+brew "fdupes"
 
 cask "flutter"
 cask "visual-studio-code"

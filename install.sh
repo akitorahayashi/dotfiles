@@ -9,44 +9,6 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Homebrew のインストール
-install_homebrew() {
-    if ! command_exists brew; then
-        echo "Homebrew をインストール中..."
-
-        # 公式の `curl` を使ったインストール
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        
-        # Homebrew のパス設定
-        echo '# Set PATH, MANPATH, etc., for Homebrew.' >> ~/.zprofile
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-        
-        # 即座に設定を反映
-        source ~/.zprofile
-
-        echo "Homebrew のインストール完了 ✅"
-    else
-        echo "Homebrew はすでにインストールされています"
-    fi
-}
-
-# Brewfile からパッケージを一括インストール
-install_brewfile() {
-    local brewfile_path="${HOME}/dotfiles/Brewfile"
-    if [[ -f "$brewfile_path" ]]; then
-        echo "Homebrew パッケージの状態を確認中..."
-        if timeout 10 brew bundle check --file="$brewfile_path" > /dev/null 2>&1; then
-            echo "すべての Homebrew パッケージはすでにインストールされています ✅"
-        else
-            echo "Homebrew パッケージをインストール中..."
-            brew bundle --file="$brewfile_path"
-            echo "Homebrew パッケージのインストール完了 ✅"
-        fi
-    else
-        echo "Warning: $brewfile_path が見つかりません。スキップします。"
-    fi
-}
-
 # Git の設定を適用
 setup_git_config() {
     ln -sf "${HOME}/dotfiles/.gitconfig" "${HOME}/.gitconfig"
@@ -58,15 +20,28 @@ setup_git_config() {
 # シェルの設定を適用
 setup_shell_config() {
     echo "シェル設定を適用中..."
-    
     ln -sf "${HOME}/dotfiles/.zshrc" "${HOME}/.zshrc"
-    
-    # すでに .zshrc に "source ~/.zshrc" があるかチェックし、なければ追加
-    if ! grep -q 'source ~/.zshrc' ~/.zshrc; then
-        echo 'source ~/.zshrc' >> ~/.zshrc
-    fi
-    
     echo "シェル設定の適用完了 ✅"
+}
+
+# .zprofile の設定を適用
+setup_zprofile() {
+    echo "Homebrew のパス設定を更新中..."
+
+    # 既存の .zprofile を削除して dotfiles のものを使用
+    if [[ -f "${HOME}/.zprofile" ]]; then
+        rm -f "${HOME}/.zprofile"
+    fi
+
+    # dotfiles の .zprofile を適用
+    ln -sf "${HOME}/dotfiles/.zprofile" "${HOME}/.zprofile"
+
+    # Homebrew のパス設定を強制的に適用
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' > "${HOME}/dotfiles/.zprofile"
+
+    source "${HOME}/.zprofile"
+
+    echo "Homebrew のパス設定が完了 ✅"
 }
 
 # Xcode Command Line Tools のインストール（非対話的）
@@ -77,6 +52,25 @@ install_xcode_cli() {
         echo "Xcode Command Line Tools のインストール完了 ✅"
     else
         echo "Xcode Command Line Tools はすでにインストールされています"
+    fi
+}
+
+
+# Homebrew のインストール
+install_homebrew() {
+    if ! command_exists brew; then
+        echo "Homebrew をインストール中..."
+
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        
+        echo '# Set PATH for Homebrew' >> ~/.zprofile
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+
+        source ~/.zprofile
+
+        echo "Homebrew のインストール完了 ✅"
+    else
+        echo "Homebrew はすでにインストールされています"
     fi
 }
 
@@ -93,19 +87,34 @@ install_rosetta() {
     fi
 }
 
+# Brewfile からパッケージを一括インストール
+install_brewfile() {
+    local brewfile_path="${HOME}/dotfiles/Brewfile"
+    if [[ -f "$brewfile_path" ]]; then
+        echo "Homebrew パッケージの状態を確認中..."
+        if ! brew bundle check --file="$brewfile_path" > /dev/null 2>&1; then
+            echo "Homebrew パッケージをインストール中..."
+            brew bundle --file="$brewfile_path"
+            echo "Homebrew パッケージのインストール完了 ✅"
+        else
+            echo "すべての Homebrew パッケージはすでにインストールされています ✅"
+        fi
+    else
+        echo "Warning: $brewfile_path が見つかりません。スキップします。"
+    fi
+}
+
+
 # Flutter のセットアップ
 setup_flutter() {
     if ! command_exists flutter; then
-        echo "Flutter はインストールされていません。セットアップをスキップします。"
+        echo "Flutter がインストールされていません。セットアップをスキップします。"
         return
     fi
 
     echo "Flutter 環境をセットアップ中..."
     
-    # Android SDK ライセンスの同意（flutter doctor 実行時に確認）
     flutter doctor --android-licenses
-
-    # Flutter のセットアップ状況を確認
     flutter doctor
 
     echo "Flutter 環境のセットアップ完了 ✅"
@@ -126,13 +135,14 @@ install_brew_package() {
 # 全体のセットアップを実行
 setup_git_config
 setup_shell_config
+setup_zprofile
 install_xcode_cli
 install_homebrew
 install_rosetta
 install_brewfile
 setup_flutter
 
-# シェルの再読み込み、パスの反映
+# シェルの再読み込み
 exec $SHELL -l
 
 end_time=$(date +%s)

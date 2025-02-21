@@ -1,13 +1,25 @@
-# Homebrew のパスを設定
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew のパスを設定 (Apple Silicon)
+if [[ -x "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # Android SDK の環境変数
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export ANDROID_SDK_ROOT=$ANDROID_HOME
-export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+
+for dir in "$ANDROID_HOME/cmdline-tools/latest/bin" "$ANDROID_HOME/tools/bin" "$ANDROID_HOME/platform-tools"; do
+    if [[ ":$PATH:" != *":$dir:"* ]]; then
+        export PATH="$dir:$PATH"
+    fi
+done
 
 # Flutter のパスを設定
-export PATH="$HOME/flutter/bin:$PATH"
+if [[ -x "/opt/homebrew/bin/flutter" ]]; then
+    flutter_path="/opt/homebrew/bin"
+elif [[ -d "$HOME/flutter/bin" ]]; then
+    flutter_path="$HOME/flutter/bin"
+fi
 
-# 環境変数を適用
-source ~/.zshrc
+if [[ -n "$flutter_path" && ":$PATH:" != *":$flutter_path:"* ]]; then
+    export PATH="$flutter_path:$PATH"
+fi
