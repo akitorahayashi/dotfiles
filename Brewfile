@@ -3,6 +3,7 @@ brew "gh"
 brew "cocoapods"
 brew "zsh"
 brew "fdupes"
+brew "fswatch"
 
 cask "flutter"
 cask "visual-studio-code"

@@ -160,19 +160,61 @@ setup_flutter() {
     echo "Flutter 環境のセットアップ完了 ✅"
 }
 
+# VSCode のセットアップ
+setup_vscode() {
+    echo "VS Code のセットアップを開始します..."
+
+    if ! command -v code &>/dev/null; then
+        echo "VS Code がインストールされていません。セットアップをスキップします。"
+        return
+    fi
+
+    mkdir -p "$HOME/Library/Application Support/Code/User"
+
+    ln -sf "$HOME/dotfiles/vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+    ln -sf "$HOME/dotfiles/vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
+
+    if [[ -f "$HOME/dotfiles/vscode/extensions.txt" ]]; then
+        while IFS= read -r extension; do
+            code --install-extension "$extension" --force
+        done < "$HOME/dotfiles/vscode/extensions.txt"
+    fi
+
+    echo "✅ VS Code のセットアップが完了しました！"
+}
+
+# VSCode の設定自動同期のセットアップ
+start_vscode_sync() {
+    echo "VS Code の設定同期を開始します..."
+
+    # スクリプトが実行可能になっているか確認
+    chmod +x "$HOME/dotfiles/sync_vscode.sh"
+
+    # 既に実行されている場合はスキップ
+    if pgrep -f "fswatch.*settings.json" > /dev/null; then
+        echo "VS Code の同期スクリプトは既に実行中です。スキップします。"
+    else
+        nohup "$HOME/dotfiles/sync_vscode.sh" > /dev/null 2>&1 &
+        echo "✅ VS Code の設定同期をバックグラウンドで開始しました！"
+    fi
+}
+
+
 # 実行順序
 install_xcode_tools
 install_rosetta
 install_homebrew
+setup_zprofile
 
 # Mac のシステム設定を適用
 source "$HOME/dotfiles/setup_mac_settings.sh"
 
-setup_zprofile
 setup_git_config
 setup_shell_config
 install_brewfile
 setup_flutter
+setup_vscode
+start_vscode_sync
 
 end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))

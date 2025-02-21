@@ -101,4 +101,31 @@ Applies system settings from `setup_mac_settings.sh`, configuring:
 - Keyboard repeat rate  
 - Dock preferences (size, auto-hide, hot corners)  
 - Finder settings (path bar, status bar, hidden files visibility)  
-- Screenshot save location  
+- Screenshot save location
+
+## 9. VS Code Configuration
+This setup automatically syncs VS Code settings and extensions across devices.
+
+### **How It Works**
+- **Symbolic links** ensure settings (`settings.json` & `keybindings.json`) are read directly from `dotfiles/`.
+- A **sync script (`sync_vscode.sh`) automatically updates dotfiles** when VS Code settings change.
+- The **install script (`install.sh`) applies the settings** on new machines and starts the sync script.
+
+### **How to Sync VS Code Settings**
+1. **Backup Current VS Code Settings**
+```sh
+mkdir -p ~/dotfiles/vscode
+cp -r "$HOME/Library/Application Support/Code/User/settings.json" ~/dotfiles/vscode/
+cp -r "$HOME/Library/Application Support/Code/User/keybindings.json" ~/dotfiles/vscode/
+code --list-extensions > ~/dotfiles/vscode/extensions.txt
+```
+Enable Automatic Syncing (Included in install.sh)
+```sh
+./install.sh
+```
+This will:
+- Restore VS Code settings using symbolic links.
+- Start a background process (sync_vscode.sh) to watch for settings changes.
+
+On a New Machine, Just Run `install.sh`
+Now, all VS Code settings & extensions will stay in sync across all your devices.
