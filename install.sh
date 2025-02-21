@@ -8,10 +8,10 @@ command_exists() {
 }
 
 # Xcode Command Line Tools のインストール（非対話的）
-install_xcode_cli() {
+install_xcode_tools() {
     if ! xcode-select -p &>/dev/null; then
         echo "Xcode Command Line Tools をインストール中..."
-        softwareupdate --install -a
+        xcode-select --install
         echo "Xcode Command Line Tools のインストール完了 ✅"
     else
         echo "Xcode Command Line Tools はすでにインストールされています"
@@ -27,14 +27,30 @@ install_rosetta() {
 
         # M1 または M2 の場合のみ Rosetta 2 をインストール
         if [[ "$MAC_MODEL" == *"M1"* || "$MAC_MODEL" == *"M2"* ]]; then
+            # すでに Rosetta 2 がインストールされているかチェック
+            if pgrep oahd >/dev/null 2>&1; then
+                echo "Rosetta 2 はすでにインストールされています ✅"
+                return
+            fi
+
+            # Rosetta 2 をインストール
             echo "Rosetta 2 を $MAC_MODEL 向けにインストール中..."
             softwareupdate --install-rosetta --agree-to-license
-            echo "Rosetta 2 のインストールが完了しました ✅"
+
+            # インストールの成否をチェック
+            if pgrep oahd >/dev/null 2>&1; then
+                echo "Rosetta 2 のインストールが完了しました ✅"
+            else
+                echo "Rosetta 2 のインストールに失敗しました ❌"
+            fi
         else
             echo "この Mac ($MAC_MODEL) には Rosetta 2 は不要です ✅"
         fi
+    else
+        echo "この Mac は Apple Silicon ではないため、Rosetta 2 は不要です ✅"
     fi
 }
+
 
 install_homebrew() {
     if ! command_exists brew; then
@@ -68,17 +84,11 @@ setup_git_config() {
     echo "Git 設定を適用しました ✅"
 }
 
-# シェルの設定を適用（source ~/.zshrc の重複防止）
+# シェルの設定を適用
 setup_shell_config() {
-    echo "シェル設定を適用中..."
+    echo "シェルの設定を適用中..."
     ln -sf "${HOME}/dotfiles/.zshrc" "${HOME}/.zshrc"
-
-    # .zshrc に "source ~/.zshrc" が重複しないようにする
-    if ! grep -q "source ~/.zshrc" "$HOME/.zshrc"; then
-        echo 'source ~/.zshrc' >> "$HOME/.zshrc"
-    fi
-
-    echo "シェル設定の適用完了 ✅"
+    echo "シェルの設定の適用完了 ✅"
 }
 
 install_brewfile() {
@@ -118,7 +128,7 @@ setup_flutter() {
 }
 
 # 実行順序
-install_xcode_cli
+install_xcode_tools
 install_rosetta
 install_homebrew
 setup_zprofile
@@ -127,7 +137,8 @@ setup_shell_config
 install_brewfile
 setup_flutter
 
-exec $SHELL -l
 end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))
 echo "セットアップ完了 🎉（所要時間: ${elapsed_time}秒）"
+
+exec $SHELL -l
