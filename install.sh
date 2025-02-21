@@ -131,6 +131,10 @@ setup_flutter() {
 install_xcode_tools
 install_rosetta
 install_homebrew
+
+# Mac のシステム設定を適用
+source "$HOME/dotfiles/setup_mac_settings.sh"
+
 setup_zprofile
 setup_git_config
 setup_shell_config
