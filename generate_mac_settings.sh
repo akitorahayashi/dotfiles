@@ -6,19 +6,13 @@
 # ================================================
 #
 # 【使い方】
-# 1. スクリプトに実行権限を付与
+# 1. 実行権限を付与
 #    chmod +x generate_mac_settings.sh
 # 2. スクリプトを実行
 #    ./generate_mac_settings.sh
 # 3. `setup_mac_settings.sh` が作成される
 # 4. `setup_mac_settings.sh` を適用するには:
 #    source ~/dotfiles/setup_mac_settings.sh
-#
-# 【期待される動作】
-# - 現在の macOS のシステム設定 (トラックパッド速度, Dock のサイズ, Finder の設定など) を取得
-# - 取得した設定を `setup_mac_settings.sh` に書き出す
-# - 既存の `setup_mac_settings.sh` がある場合、バックアップ (`setup_mac_settings.bak`) を作成
-# - `install.sh` から `setup_mac_settings.sh` を `source` すれば、設定を再適用可能
 #
 # ================================================
 
@@ -27,7 +21,7 @@ BACKUP_FILE="$HOME/dotfiles/setup_mac_settings.bak"
 
 echo "現在の macOS の設定を取得し、$OUTPUT_FILE を生成します..."
 
-# 既存の setup_mac_settings.sh がある場合はバックアップを作成
+# 既存の設定ファイルをバックアップ
 if [ -f "$OUTPUT_FILE" ]; then
     mv "$OUTPUT_FILE" "$BACKUP_FILE"
     echo "既存の設定ファイルをバックアップしました: $BACKUP_FILE"
@@ -40,48 +34,62 @@ cat <<EOF > "$OUTPUT_FILE"
 echo "Mac のシステム設定を適用中..."
 EOF
 
-# macOS 設定を取得してファイルに書き込む
+# 値を取得し、存在しない場合はデフォルト値にフォールバックする関数
+get_default_value() {
+    local value
+    value=$(defaults read "$1" "$2" 2>/dev/null || echo "$3")
+    [[ -z "$value" ]] && value="$3"
+    echo "$value"
+}
 
 # トラックパッドの速度
-TRACKPAD_SPEED=$(defaults read -g com.apple.trackpad.scaling)
+TRACKPAD_SPEED=$(get_default_value -g com.apple.trackpad.scaling 1.5)
 echo "defaults write -g com.apple.trackpad.scaling -float $TRACKPAD_SPEED" >> "$OUTPUT_FILE"
 
 # マウスの速度
-MOUSE_SPEED=$(defaults read -g com.apple.mouse.scaling)
-echo "defaults write -g com.apple.mouse.scaling -float $MOUSE_SPEED" >> "$OUTPUT_FILE"
+MOUSE_SPEED=$(get_default_value -g com.apple.mouse.scaling 1.5)
+[[ -n "$MOUSE_SPEED" ]] && echo "defaults write -g com.apple.mouse.scaling -float $MOUSE_SPEED" >> "$OUTPUT_FILE"
 
 # キーボードのキーリピート速度
-INITIAL_KEY_REPEAT=$(defaults read -g InitialKeyRepeat)
-KEY_REPEAT=$(defaults read -g KeyRepeat)
-echo "defaults write -g InitialKeyRepeat -int $INITIAL_KEY_REPEAT" >> "$OUTPUT_FILE"
-echo "defaults write -g KeyRepeat -int $KEY_REPEAT" >> "$OUTPUT_FILE"
+INITIAL_KEY_REPEAT=$(get_default_value -g InitialKeyRepeat 25)
+KEY_REPEAT=$(get_default_value -g KeyRepeat 6)
+[[ -n "$INITIAL_KEY_REPEAT" ]] && echo "defaults write -g InitialKeyRepeat -int $INITIAL_KEY_REPEAT" >> "$OUTPUT_FILE"
+[[ -n "$KEY_REPEAT" ]] && echo "defaults write -g KeyRepeat -int $KEY_REPEAT" >> "$OUTPUT_FILE"
 
 # Dock の設定
-DOCK_SIZE=$(defaults read com.apple.dock tilesize)
-DOCK_AUTOHIDE=$(defaults read com.apple.dock autohide)
-DOCK_RECENTS=$(defaults read com.apple.dock show-recents)
+DOCK_SIZE=$(get_default_value com.apple.dock tilesize 50)
+DOCK_AUTOHIDE=$(get_default_value com.apple.dock autohide false)
+DOCK_RECENTS=$(get_default_value com.apple.dock show-recents false)
 echo "defaults write com.apple.dock tilesize -int $DOCK_SIZE" >> "$OUTPUT_FILE"
-echo "defaults write com.apple.dock autohide -bool $DOCK_AUTOHIDE" >> "$OUTPUT_FILE"
-echo "defaults write com.apple.dock show-recents -bool $DOCK_RECENTS" >> "$OUTPUT_FILE"
+[[ -n "$DOCK_AUTOHIDE" ]] && echo "defaults write com.apple.dock autohide -bool $DOCK_AUTOHIDE" >> "$OUTPUT_FILE"
+[[ -n "$DOCK_RECENTS" ]] && echo "defaults write com.apple.dock show-recents -bool $DOCK_RECENTS" >> "$OUTPUT_FILE"
+
+# ホットコーナーの設定
+for CORNER in tl tr bl br; do
+    CORNER_VALUE=$(defaults read com.apple.dock "wvous-${CORNER}-corner" 2>/dev/null || echo 0)
+    MODIFIER_VALUE=$(defaults read com.apple.dock "wvous-${CORNER}-modifier" 2>/dev/null || echo 0)
+    echo "defaults write com.apple.dock wvous-${CORNER}-corner -int $CORNER_VALUE" >> "$OUTPUT_FILE"
+    echo "defaults write com.apple.dock wvous-${CORNER}-modifier -int $MODIFIER_VALUE" >> "$OUTPUT_FILE"
+done
 echo "killall Dock" >> "$OUTPUT_FILE"
 
 # Finder の設定
-FINDER_PATHBAR=$(defaults read com.apple.finder ShowPathbar)
-FINDER_STATUSBAR=$(defaults read com.apple.finder ShowStatusBar)
-FINDER_SHOW_HIDDEN=$(defaults read com.apple.finder AppleShowAllFiles)
-echo "defaults write com.apple.finder ShowPathbar -bool $FINDER_PATHBAR" >> "$OUTPUT_FILE"
-echo "defaults write com.apple.finder ShowStatusBar -bool $FINDER_STATUSBAR" >> "$OUTPUT_FILE"
-echo "defaults write com.apple.finder AppleShowAllFiles -bool $FINDER_SHOW_HIDDEN" >> "$OUTPUT_FILE"
+FINDER_PATHBAR=$(get_default_value com.apple.finder ShowPathbar false)
+FINDER_STATUSBAR=$(get_default_value com.apple.finder ShowStatusBar false)
+FINDER_SHOW_HIDDEN=$(get_default_value com.apple.finder AppleShowAllFiles false)
+[[ -n "$FINDER_PATHBAR" ]] && echo "defaults write com.apple.finder ShowPathbar -bool $FINDER_PATHBAR" >> "$OUTPUT_FILE"
+[[ -n "$FINDER_STATUSBAR" ]] && echo "defaults write com.apple.finder ShowStatusBar -bool $FINDER_STATUSBAR" >> "$OUTPUT_FILE"
+[[ -n "$FINDER_SHOW_HIDDEN" ]] && echo "defaults write com.apple.finder AppleShowAllFiles -bool $FINDER_SHOW_HIDDEN" >> "$OUTPUT_FILE"
 echo "killall Finder" >> "$OUTPUT_FILE"
 
 # メニューバーの設定
-MENU_BAR_HIDDEN=$(defaults read NSGlobalDomain _HIHideMenuBar)
-echo "defaults write NSGlobalDomain _HIHideMenuBar -bool $MENU_BAR_HIDDEN" >> "$OUTPUT_FILE"
+MENU_BAR_HIDDEN=$(get_default_value NSGlobalDomain _HIHideMenuBar false)
+[[ -n "$MENU_BAR_HIDDEN" ]] && echo "defaults write NSGlobalDomain _HIHideMenuBar -bool $MENU_BAR_HIDDEN" >> "$OUTPUT_FILE"
 
 # スクリーンショットの保存場所
-SCREENSHOT_PATH=$(defaults read com.apple.screencapture location)
-echo "mkdir -p $SCREENSHOT_PATH" >> "$OUTPUT_FILE"
-echo "defaults write com.apple.screencapture location \"$SCREENSHOT_PATH\"" >> "$OUTPUT_FILE"
+SCREENSHOT_PATH=$(defaults read com.apple.screencapture location 2>/dev/null || echo "$HOME/Desktop")
+[[ -n "$SCREENSHOT_PATH" ]] && echo "mkdir -p \"$SCREENSHOT_PATH\"" >> "$OUTPUT_FILE"
+[[ -n "$SCREENSHOT_PATH" ]] && echo "defaults write com.apple.screencapture location \"$SCREENSHOT_PATH\"" >> "$OUTPUT_FILE"
 echo "killall SystemUIServer" >> "$OUTPUT_FILE"
 
 # スクリプトの最後にメッセージを追加

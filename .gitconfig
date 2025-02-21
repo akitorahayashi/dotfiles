@@ -13,4 +13,4 @@
     user = akitorahayashi
     
 [core]
-	excludesfile = ~/.gitignore_global
+	excludesfile = /Users/akitorahayashi/.gitignore_global
