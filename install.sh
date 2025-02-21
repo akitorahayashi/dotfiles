@@ -18,15 +18,20 @@ install_xcode_cli() {
     fi
 }
 
-# Apple シリコン向け Rosetta 2 のインストール
+# Apple M1, M2 向け Rosetta 2 のインストール
 install_rosetta() {
     if [[ "$(uname -m)" == "arm64" ]]; then
-        if ! softwareupdate --history | grep -q Rosetta; then
-            echo "Rosetta 2 をインストール中..."
+        # Mac のチップモデルを取得
+        MAC_MODEL=$(sysctl -n machdep.cpu.brand_string)
+        echo "Mac Model: $MAC_MODEL"  # デバッグ出力
+
+        # M1 または M2 の場合のみ Rosetta 2 をインストール
+        if [[ "$MAC_MODEL" == *"M1"* || "$MAC_MODEL" == *"M2"* ]]; then
+            echo "Rosetta 2 を $MAC_MODEL 向けにインストール中..."
             softwareupdate --install-rosetta --agree-to-license
-            echo "Rosetta 2 のインストール完了 ✅"
+            echo "Rosetta 2 のインストールが完了しました ✅"
         else
-            echo "Rosetta 2 はすでにインストールされています"
+            echo "この Mac ($MAC_MODEL) には Rosetta 2 は不要です ✅"
         fi
     fi
 }
@@ -47,7 +52,6 @@ setup_zprofile() {
     rm -f "$HOME/.zprofile"
     ln -s "$HOME/dotfiles/.zprofile" "$HOME/.zprofile"
 
-    # Brew shellenv 行がなければ追記
     if ! grep -q '/opt/homebrew/bin/brew shellenv' "$HOME/dotfiles/.zprofile"; then
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/dotfiles/.zprofile"
     fi
@@ -55,7 +59,6 @@ setup_zprofile() {
     source "$HOME/.zprofile"
     echo "Homebrew のパス設定が完了 ✅"
 }
-
 
 # Git の設定を適用
 setup_git_config() {
@@ -65,77 +68,17 @@ setup_git_config() {
     echo "Git 設定を適用しました ✅"
 }
 
-# シェルの設定を適用
+# シェルの設定を適用（source ~/.zshrc の重複防止）
 setup_shell_config() {
     echo "シェル設定を適用中..."
     ln -sf "${HOME}/dotfiles/.zshrc" "${HOME}/.zshrc"
+
+    # .zshrc に "source ~/.zshrc" が重複しないようにする
+    if ! grep -q "source ~/.zshrc" "$HOME/.zshrc"; then
+        echo 'source ~/.zshrc' >> "$HOME/.zshrc"
+    fi
+
     echo "シェル設定の適用完了 ✅"
-}
-
-# SSH キーの設定（汎用化）
-setup_ssh() {
-    echo "SSH キーの設定を開始します..."
-
-    # 既存の SSH キーがあるか確認
-    if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
-        echo "SSH キーは既に存在します ✅"
-    else
-        # Git の設定からメールアドレスを取得
-        GIT_EMAIL=$(git config --global user.email)
-        
-        # メールアドレスが設定されていない場合、ユーザーに入力を求める
-        if [[ -z "$GIT_EMAIL" ]]; then
-            read -p "Git のメールアドレスを入力してください: " GIT_EMAIL
-            git config --global user.email "$GIT_EMAIL"
-        fi
-
-        echo "SSH キーを作成中（メール: $GIT_EMAIL）..."
-        ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$HOME/.ssh/id_ed25519" -N ""
-
-        echo "SSH キーの作成が完了しました ✅"
-    fi
-
-    # SSH エージェントを起動し、鍵を追加
-    eval "$(ssh-agent -s)"
-    ssh-add "$HOME/.ssh/id_ed25519"
-
-    # SSH 公開鍵を表示して GitHub に手動登録するよう促す
-    echo "⬇⬇⬇ GitHub にこの公開鍵を追加してください ⬇⬇⬇"
-    cat "$HOME/.ssh/id_ed25519.pub"
-    echo "⬆⬆⬆ GitHub SSH 設定ページ: https://github.com/settings/keys ⬆⬆⬆"
-
-    echo "SSH 設定完了 ✅"
-}
-
-# GitHub のリモート URL を SSH に変更（汎用化）
-setup_git_ssh() {
-    echo "Git のリモート URL をチェック中..."
-    GIT_REMOTE=$(git remote get-url origin 2>/dev/null)
-
-    if [[ -z "$GIT_REMOTE" ]]; then
-        echo "Git リモートが設定されていません。スキップします。"
-        return
-    fi
-
-    if [[ $GIT_REMOTE == https://github.com/* ]]; then
-        SSH_REMOTE=$(echo "$GIT_REMOTE" | sed -E 's|https://github.com/|git@github.com:|')
-        git remote set-url origin "$SSH_REMOTE"
-        echo "リモート URL を SSH に変更しました: $SSH_REMOTE ✅"
-    else
-        echo "Git のリモート URL はすでに SSH になっています ✅"
-    fi
-}
-
-# SSH エージェントを自動起動するように設定
-setup_ssh_agent() {
-    if ! grep -q "ssh-agent -s" "$HOME/.zshrc"; then
-        echo "SSH エージェントの自動起動設定を追加中..."
-        echo 'eval "$(ssh-agent -s)"' >> "$HOME/.zshrc"
-        echo 'ssh-add ~/.ssh/id_ed25519' >> "$HOME/.zshrc"
-        echo "SSH エージェントの設定を `.zshrc` に追加しました ✅"
-    else
-        echo "SSH エージェントの設定はすでに `.zshrc` にあります ✅"
-    fi
 }
 
 install_brewfile() {
@@ -154,7 +97,7 @@ install_brewfile() {
     fi
 }
 
-# Flutter のセットアップ
+# Flutter のセットアップ（Android SDK のパスを適切に設定）
 setup_flutter() {
     if ! command_exists flutter; then
         echo "Flutter がインストールされていません。セットアップをスキップします。"
@@ -163,6 +106,11 @@ setup_flutter() {
 
     echo "Flutter 環境をセットアップ中..."
     
+    # Android SDK のパスを適切に設定
+    export ANDROID_HOME="$HOME/Library/Android/sdk"
+    export ANDROID_SDK_ROOT="$ANDROID_HOME"
+    export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH"
+
     flutter doctor --android-licenses
     flutter doctor
 
@@ -176,9 +124,6 @@ install_homebrew
 setup_zprofile
 setup_git_config
 setup_shell_config
-setup_ssh
-setup_git_ssh
-setup_ssh_agent
 install_brewfile
 setup_flutter
 

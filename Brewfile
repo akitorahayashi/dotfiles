@@ -6,7 +6,8 @@ brew "fdupes"
 
 cask "flutter"
 cask "visual-studio-code"
-cask "xcode"
+# 自分でAppStoreからインストールする
+# cask "xcode"
 cask "android-studio"
 cask "google-chrome"
 cask "slack"

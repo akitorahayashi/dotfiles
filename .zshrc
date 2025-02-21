@@ -1,8 +1,3 @@
-# Homebrew のパスを設定 (Apple Silicon)
-if [[ -x "/opt/homebrew/bin/brew" ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-
 # Android SDK の環境変数
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export ANDROID_SDK_ROOT="$ANDROID_HOME"
