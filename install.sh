@@ -192,6 +192,17 @@ setup_vscode() {
     echo "✅ VS Code のセットアップが完了しました！"
 }
 
+# Xcode の設定
+setup_xcode() {
+    echo "🔄 Xcode の設定中..."
+
+    if [[ -f "$HOME/dotfiles/restore_xcode_settings.sh" ]]; then
+        bash "$HOME/dotfiles/restore_xcode_settings.sh"
+        echo "✅ Xcode 設定の適用が完了しました！"
+    else
+        echo "⚠ restore_xcode_settings.sh が見つかりません"
+    fi
+}
 
 # 実行順序
 install_xcode_tools
@@ -200,13 +211,18 @@ install_homebrew
 setup_zprofile
 
 # Mac のシステム設定を適用
-source "$HOME/dotfiles/setup_mac_settings.sh"
+if [[ -f "$HOME/dotfiles/setup_mac_settings.sh" ]]; then
+    source "$HOME/dotfiles/setup_mac_settings.sh"
+else
+    echo "⚠ setup_mac_settings.sh が見つかりません"
+fi
 
 setup_git_config
 setup_shell_config
 install_brewfile
 setup_flutter
 setup_vscode
+setup_xcode
 
 end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))
