@@ -10,8 +10,8 @@
 #    chmod +x generate_mac_settings.sh
 # 2. スクリプトを実行
 #    ./generate_mac_settings.sh
-# 3. `setup_mac_settings.sh` が作成される
-# 4. `setup_mac_settings.sh` を適用するには:
+# 3. setup_mac_settings.sh が作成される
+# 4. setup_mac_settings.sh を適用するには:
 #    source ~/dotfiles/setup_mac_settings.sh
 #
 # ================================================
@@ -42,9 +42,16 @@ get_default_value() {
     echo "$value"
 }
 
-# トラックパッドの速度
+# トラックパッドの設定
 TRACKPAD_SPEED=$(get_default_value -g com.apple.trackpad.scaling 1.5)
+TAP_TO_CLICK=$(get_default_value com.apple.AppleMultitouchTrackpad Clicking 1)
+DRAGGING=$(get_default_value com.apple.AppleMultitouchTrackpad Dragging 0)
+THREE_FINGER_DRAG=$(get_default_value com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag 0)
+
 echo "defaults write -g com.apple.trackpad.scaling -float $TRACKPAD_SPEED" >> "$OUTPUT_FILE"
+echo "defaults write com.apple.AppleMultitouchTrackpad Clicking -bool $TAP_TO_CLICK" >> "$OUTPUT_FILE"
+echo "defaults write com.apple.AppleMultitouchTrackpad Dragging -bool $DRAGGING" >> "$OUTPUT_FILE"
+echo "defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool $THREE_FINGER_DRAG" >> "$OUTPUT_FILE"
 
 # マウスの速度
 MOUSE_SPEED=$(get_default_value -g com.apple.mouse.scaling 1.5)
