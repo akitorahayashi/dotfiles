@@ -1,4 +1,4 @@
-# Mac Environment Setup Script
+# MacOS Environment Setup Script
 
 This repository provides `install.sh`, a script to automate macOS environment setup.  
 By running this script, you can apply Git configurations, install Homebrew, set up Xcode Command Line Tools, install various development tools, and configure SSH keys for GitHub.
@@ -6,7 +6,6 @@ By running this script, you can apply Git configurations, install Homebrew, set 
 # Setup Instructions
 
 ## 1. Clone the Repository
-
 ```sh
 git clone git@github.com:akitorahayashi/dotfiles.git ~/dotfiles
 cd ~/dotfiles
@@ -18,30 +17,18 @@ chmod +x install.sh
 ## 3. Update Git Configuration
 Before running the setup script, you need to update the Git configuration with your own name and email.
 
-Open `.gitconfig` using a text editor:
+Open `.gitconfig` using a text editor.
 
-Modify the following lines with your own information:
-```ini
-[user]
-    name = YOUR_NAME
-    email = YOUR_EMAIL
-
-[github]
-    user = YOUR_GITHUB_USERNAME
-    
-[core]
-    excludesfile = /Users/YOUR_USERNAME/.gitignore_global
-```
+Modify the lines with your own information.
 ## 4. Run the Setup Script
 ```sh
 ./install.sh
 ```
-This will automatically start the environment setup process:
-- Installs Homebrew if it is not already installed.
-- Installs Rosetta 2 if running on Apple Silicon (M1/M2).
-- Installs Xcode Command Line Tools if they are missing.
-- Installs apps and CLI tools specified in the `Brewfile`.
-- applies macOS system settings from `setup_mac_settings.sh`.
+This script will:
+- Install Homebrew & essential packages
+- Apply Git & macOS system settings
+- Restore VS Code settings & extensions
+- Configure Xcode & Flutter
 ## 5. Create and Register an SSH Key for GitHub
 If no SSH key exists, the script will generate one.
 You need to add the public key to GitHub manually.
@@ -53,7 +40,7 @@ Then, verify the SSH connection:
 ```sh
 ssh -T git@github.com
 ```
-If you see the following message, SSH authentication was successful:
+If you see a message like this, SSH authentication was successful:
 ```sh
 Hi akitorahayashi! You've successfully authenticated, but GitHub does not provide shell access.
 ```
@@ -62,6 +49,21 @@ After setup is complete, reload the shell to apply the changes.
 ```sh
 exec $SHELL -l
 ```
+
+# Workflow
+## On Your Old Mac
+Back up VS Code & Xcode settings
+```bash
+./backup_vscode_settings.sh
+./backup_xcode_settings.sh
+```
+Commit & push to GitHub
+## On Your New Mac
+Clone your dotfiles & run the setup script
+```bash
+./install.sh
+```
+Your Mac is now set up exactly like before! 🎉
 # Features
 ## 1. Git Configuration
 `dotfiles/.gitconfig` and `dotfiles/.gitignore_global` are symlinked to the home directory.
@@ -103,29 +105,33 @@ Applies system settings from `setup_mac_settings.sh`, configuring:
 - Finder settings (path bar, status bar, hidden files visibility)  
 - Screenshot save location
 
-## 9. VS Code Configuration
-This setup automatically syncs VS Code settings and extensions across devices.
-
-### **How It Works**
-- **Symbolic links** ensure settings (`settings.json` & `keybindings.json`) are read directly from `dotfiles/`.
-- A **sync script (`sync_vscode.sh`) automatically updates dotfiles** when VS Code settings change.
-- The **install script (`install.sh`) applies the settings** on new machines and starts the sync script.
-
-### **How to Sync VS Code Settings**
-1. **Backup Current VS Code Settings**
-```sh
-mkdir -p ~/dotfiles/vscode
-cp -r "$HOME/Library/Application Support/Code/User/settings.json" ~/dotfiles/vscode/
-cp -r "$HOME/Library/Application Support/Code/User/keybindings.json" ~/dotfiles/vscode/
-code --list-extensions > ~/dotfiles/vscode/extensions.txt
+## 9. VS Code Settings Backup & Restore
+### Backup VS Code Settings
+```bash
+./backup_vscode_settings.sh
 ```
-Enable Automatic Syncing (Included in install.sh)
-```sh
-./install.sh
-```
-This will:
-- Restore VS Code settings using symbolic links.
-- Start a background process (sync_vscode.sh) to watch for settings changes.
+This saves
+- `settings.json`
+- `keybindings.json`
+- Installed extensions (`extensions.txt`)
 
-On a New Machine, Just Run `install.sh`
-Now, all VS Code settings & extensions will stay in sync across all your devices.
+### Restore VS Code Settings
+```bash
+./restore_vscode_settings.sh
+```
+This will
+- Copy settings to the correct location
+- Install missing extensions (but skip already installed ones)
+
+## 10. Xcode Settings Backup & Restore
+### Backup Xcode Settings
+```bash
+./backup_xcode_settings.sh
+```
+Saves configurations to `dotfiles/.xcode/.`
+
+### Restore Xcode Settings
+```bash
+./restore_xcode_settings.sh
+```
+Restores them to `~/Library/Developer/Xcode/UserData/.`

@@ -155,56 +155,40 @@ setup_flutter() {
     echo "Flutter 環境のセットアップ完了 ✅"
 }
 
-# VSCode のセットアップ
+# VS Code のセットアップ
 setup_vscode() {
-    echo "VS Code のセットアップを開始します..."
+    echo "🔄 VS Code のセットアップを開始します..."
 
+    # VS Code がインストールされているか確認
     if ! command -v code &>/dev/null; then
-        echo "VS Code がインストールされていません。スキップします。"
+        echo "❌ VS Code がインストールされていません。スキップします。"
         return
     fi
 
-    mkdir -p "$HOME/Library/Application Support/Code/User"
-
-    ln -sf "$HOME/dotfiles/vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
-    ln -sf "$HOME/dotfiles/vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
-
-    if [[ -f "$HOME/dotfiles/vscode/extensions.txt" ]]; then
-        echo "🔄 VS Code 拡張機能のインストールを確認中..."
-        
-        # 既にインストールされている拡張機能の一覧を取得
-        installed_extensions=$(code --list-extensions)
-
-        while IFS= read -r extension; do
-            # 空行やコメント行をスキップ
-            [[ -z "$extension" || "$extension" =~ ^# ]] && continue
-
-            # インストール済みの拡張機能かチェック
-            if echo "$installed_extensions" | grep -q "^$extension\$"; then
-                echo "✅ $extension はすでにインストール済み"
-            else
-                echo "➕ $extension をインストール中..."
-                code --install-extension "$extension" --force
-            fi
-        done < "$HOME/dotfiles/vscode/extensions.txt"
+    # 設定の復元スクリプトが存在するか確認し、実行
+    if [[ -f "$HOME/dotfiles/restore_vscode_settings.sh" ]]; then
+        bash "$HOME/dotfiles/restore_vscode_settings.sh"
+    else
+        echo "⚠ VS Code の復元スクリプトが見つかりません。設定の復元をスキップします。"
     fi
 
-    # Homebrew でインストールされた Flutter のパスを取得
+    # Flutter SDK のパスを VS Code に適用
     FLUTTER_VERSION=$(ls /opt/homebrew/Caskroom/flutter | sort -rV | head -n 1)
     FLUTTER_SDK_PATH="/opt/homebrew/Caskroom/flutter/${FLUTTER_VERSION}/flutter"
 
     if [[ -d "$FLUTTER_SDK_PATH" ]]; then
         VSCODE_SETTINGS="$HOME/dotfiles/vscode/settings.json"
         
-        echo "Flutter SDK のパスを VS Code に適用中..."
+        echo "🔧 Flutter SDK のパスを VS Code に適用中..."
         jq --arg path "$FLUTTER_SDK_PATH" '.["dart.flutterSdkPath"] = $path' "$VSCODE_SETTINGS" > "${VSCODE_SETTINGS}.tmp" && mv "${VSCODE_SETTINGS}.tmp" "$VSCODE_SETTINGS"
-        echo "✅ Flutter SDK パスを $FLUTTER_SDK_PATH に設定しました！"
+        echo "✅ Flutter SDK のパスを $FLUTTER_SDK_PATH に設定しました！"
     else
         echo "⚠ Homebrew でインストールされた Flutter SDK が見つかりませんでした。"
     fi
 
     echo "✅ VS Code のセットアップが完了しました！"
 }
+
 
 
 # Xcode の設定
