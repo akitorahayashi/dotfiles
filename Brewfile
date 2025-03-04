@@ -4,6 +4,7 @@ brew "cocoapods"
 brew "zsh"
 brew "fdupes"
 brew "fswatch"
+brew "fastlane"
 
 cask "flutter"
 cask "visual-studio-code"
