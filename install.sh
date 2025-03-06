@@ -155,41 +155,39 @@ setup_flutter() {
     echo "Flutter 環境のセットアップ完了 ✅"
 }
 
-# VS Code のセットアップ
-setup_vscode() {
-    echo "🔄 VS Code のセットアップを開始します..."
+# Cursor のセットアップ
+setup_cursor() {
+    echo "🔄 Cursor のセットアップを開始します..."
 
-    # VS Code がインストールされているか確認
-    if ! command -v code &>/dev/null; then
-        echo "❌ VS Code がインストールされていません。スキップします。"
+    # Cursor がインストールされているか確認
+    if ! command -v cursor &>/dev/null; then
+        echo "❌ Cursor がインストールされていません。スキップします。"
         return
     fi
 
     # 設定の復元スクリプトが存在するか確認し、実行
-    if [[ -f "$HOME/dotfiles/restore_vscode_settings.sh" ]]; then
-        bash "$HOME/dotfiles/restore_vscode_settings.sh"
+    if [[ -f "$HOME/dotfiles/restore_cursor_settings.sh" ]]; then
+        bash "$HOME/dotfiles/restore_cursor_settings.sh"
     else
-        echo "⚠ VS Code の復元スクリプトが見つかりません。設定の復元をスキップします。"
+        echo "⚠ Cursor の復元スクリプトが見つかりません。設定の復元をスキップします。"
     fi
 
-    # Flutter SDK のパスを VS Code に適用
+    # Flutter SDK のパスを Cursor に適用
     FLUTTER_VERSION=$(ls /opt/homebrew/Caskroom/flutter | sort -rV | head -n 1)
     FLUTTER_SDK_PATH="/opt/homebrew/Caskroom/flutter/${FLUTTER_VERSION}/flutter"
 
     if [[ -d "$FLUTTER_SDK_PATH" ]]; then
-        VSCODE_SETTINGS="$HOME/dotfiles/vscode/settings.json"
+        CURSOR_SETTINGS="$HOME/dotfiles/cursor/settings.json"
         
-        echo "🔧 Flutter SDK のパスを VS Code に適用中..."
-        jq --arg path "$FLUTTER_SDK_PATH" '.["dart.flutterSdkPath"] = $path' "$VSCODE_SETTINGS" > "${VSCODE_SETTINGS}.tmp" && mv "${VSCODE_SETTINGS}.tmp" "$VSCODE_SETTINGS"
+        echo "🔧 Flutter SDK のパスを Cursor に適用中..."
+        jq --arg path "$FLUTTER_SDK_PATH" '.["dart.flutterSdkPath"] = $path' "$CURSOR_SETTINGS" > "${CURSOR_SETTINGS}.tmp" && mv "${CURSOR_SETTINGS}.tmp" "$CURSOR_SETTINGS"
         echo "✅ Flutter SDK のパスを $FLUTTER_SDK_PATH に設定しました！"
     else
         echo "⚠ Homebrew でインストールされた Flutter SDK が見つかりませんでした。"
     fi
 
-    echo "✅ VS Code のセットアップが完了しました！"
+    echo "✅ Cursor のセットアップが完了しました！"
 }
-
-
 
 # Xcode の設定
 setup_xcode() {
@@ -220,7 +218,7 @@ setup_git_config
 setup_shell_config
 install_brewfile
 setup_flutter
-setup_vscode
+setup_cursor
 setup_xcode
 
 end_time=$(date +%s)

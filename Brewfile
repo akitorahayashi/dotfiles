@@ -7,7 +7,7 @@ brew "fswatch"
 brew "fastlane"
 
 cask "flutter"
-cask "visual-studio-code"
+cask "cursor"
 # 自分でAppStoreからインストールする
 # cask "xcode"
 cask "android-studio"
