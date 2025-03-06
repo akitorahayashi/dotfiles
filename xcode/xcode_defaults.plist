@@ -1,0 +1,232 @@
+{
+    CurrentAlertPreferencesSelection = "Xcode.AlertEvent.BuildStart";
+    DVTDeveloperAccountManagerAppleIDLists =     {
+        "IDE.Identifiers.Prod" =         (
+                        {
+                identifier = "9370E5E2-BAD8-40B8-A694-9419DF82B032";
+            },
+                        {
+                identifier = "6159C46E-D8FB-4266-8693-B16FCBB33EBA";
+            }
+        );
+    };
+    DVTDisclosureViewDisclosedStates =     {
+    };
+    DVTFontAndColorLastUpdatedToolsVersion = "16.2";
+    DVTSourceControlAccountDefaultsKey =     (
+                {
+            DVTSourceControlAccountAuthTypeKey = 4;
+            DVTSourceControlAccountNameKey = "swift-dependencies-1b17e16d";
+            DVTSourceControlAccountSSHKeyPath = "/Users/akitorahayashi/.ssh/id_ed25519";
+            DVTSourceControlAccountURLKey = "/Users/akitorahayashi/Library/Developer/Xcode/DerivedData/ReactiveCounterApp-exwkimntcvgrjiflghwtiqqjisur/SourcePackages/repositories/swift-dependencies-1b17e16d";
+            DVTSourceControlAccountUsernameKey = git;
+            DVTSourceControlRepositoryIdentifierKey = 0557605C8616D35B83843D73CA3379EAE0B32E63;
+            DVTSourceControlSystemIdentifierKey = "com.apple.dt.Xcode.sourcecontrol.Git";
+        },
+                {
+            DVTSourceControlAccountAuthTypeKey = 4;
+            DVTSourceControlAccountNameKey = "reactive_counter_app";
+            DVTSourceControlAccountSSHKeyPath = "/Users/akitorahayashi/.ssh/id_ed25519";
+            DVTSourceControlAccountURLKey = "git@github.com:akitorahayashi/reactive_counter_app.git";
+            DVTSourceControlAccountUsernameKey = git;
+            DVTSourceControlRepositoryIdentifierKey = B817166C1D36FFCB6FB308E5038CB2A6BF5B5C52;
+            DVTSourceControlSystemIdentifierKey = "com.apple.dt.Xcode.sourcecontrol.Git";
+        },
+                {
+            DVTSourceControlAccountAuthTypeKey = 4;
+            DVTSourceControlAccountNameKey = "swift-dependencies-1b17e16d";
+            DVTSourceControlAccountSSHKeyPath = "/Users/akitorahayashi/.ssh/id_ed25519";
+            DVTSourceControlAccountURLKey = "/Users/akitorahayashi/Library/Developer/Xcode/DerivedData/ReactiveCounterApp-exwkimntcvgrjiflghwtiqqjisur/SourcePackages/repositories/swift-dependencies-1b17e16d";
+            DVTSourceControlAccountUsernameKey = git;
+            DVTSourceControlRepositoryIdentifierKey = 0557605C8616D35B83843D73CA3379EAE0B32E63;
+            DVTSourceControlSystemIdentifierKey = "com.apple.dt.Xcode.sourcecontrol.Git";
+        },
+                {
+            DVTSourceControlAccountAuthTypeKey = 4;
+            DVTSourceControlAccountNameKey = "reactive_counter_app";
+            DVTSourceControlAccountSSHKeyPath = "/Users/akitorahayashi/.ssh/id_ed25519";
+            DVTSourceControlAccountURLKey = "git@github.com:akitorahayashi/reactive_counter_app.git";
+            DVTSourceControlAccountUsernameKey = git;
+            DVTSourceControlRepositoryIdentifierKey = B817166C1D36FFCB6FB308E5038CB2A6BF5B5C52;
+            DVTSourceControlSystemIdentifierKey = "com.apple.dt.Xcode.sourcecontrol.Git";
+        }
+    );
+    IBAppliesAutoResizingRulesWhileResizing = 0;
+    IBPreferencesMigrated = 1;
+    "IDEAnalyticsMetricsNotifications.AnalyticsMetricsNotificationsController.lastRefreshAttemptDate" = "2025-03-05 11:08:50 +0000";
+    IDEAppStatisticsRunDestinationPlatform =     {
+        iphoneos = 1;
+        iphonesimulator = 1;
+    };
+    IDEAppStatisticsXcodeVersionMetricsHistoryStorage =     {
+        16C5032a = "2025-03-05 11:06:51 +0000";
+    };
+    IDEAppStoreProductSourceRateLimiter =     {
+        DVTUserDefaultsCachingCache =         {
+            "App Store Product Source Accounts: 9370E5E2-BAD8-40B8-A694-9419DF82B032 and 6159C46E-D8FB-4266-8693-B16FCBB33EBA" = "2025-03-05 11:17:15 +0000";
+        };
+        DVTUserDefaultsCachingKeysRecentlyUsed =         (
+            "App Store Product Source Accounts: 9370E5E2-BAD8-40B8-A694-9419DF82B032 and 6159C46E-D8FB-4266-8693-B16FCBB33EBA"
+        );
+    };
+    IDEDefaultPrimaryEditorFrameSizeForPaths =     {
+        "file:///Users/akitorahayashi/Desktop/TLiOSUtil.swift" =         {
+            height = 750;
+            width = 800;
+        };
+        "file:///Users/akitorahayashi/Library/Developer/Xcode/UserData/IDETemplateMacros.plist" =         {
+            height = 750;
+            width = 800;
+        };
+        "file:///Users/akitorahayashi/dotfiles/install.sh" =         {
+            height = 750;
+            width = 800;
+        };
+        "file:///Users/akitorahayashi/dotfiles/vscode/settings.json" =         {
+            height = 750;
+            width = 800;
+        };
+    };
+    IDEExtensionsBuiltPriorToXcode12 =     (
+    );
+    IDEFileExtensionDisplayMode = 2;
+    "IDEFoundation.SigningEditorCapsuleViewStateRestorationManager.collapsedViewControllersCache" =     {
+        DVTUserDefaultsCachingCache =         {
+            8585417226723814466 = 0;
+        };
+        DVTUserDefaultsCachingKeysRecentlyUsed =         (
+            8585417226723814466
+        );
+    };
+    IDEHasConvertedXcode3BuildPrefs = 1;
+    IDEKeyBindingCurrentPreferenceSet = "Default.idekeybindings";
+    IDEKeyBindingExcludedPreferenceSet =     (
+        Default
+    );
+    IDELanguageModelSelectedDuringFirstLaunch = 1;
+    IDELastLSRegisterHashes =     {
+        "/Applications/Xcode.app/Contents/Applications/Accessibility Inspector.app" = {length = 20, bytes = 0x7a4b79a57be52fac043f4dde06b007bdb3cf3369};
+        "/Applications/Xcode.app/Contents/Applications/FileMerge.app" = {length = 20, bytes = 0x4bc843f27b690f286f727776c1840f93cb0bccfb};
+        "/Applications/Xcode.app/Contents/Applications/Instruments.app" = {length = 20, bytes = 0xfef1a4ab93911c24af8aae06bb4066edf2211c4b};
+        "/Applications/Xcode.app/Contents/Applications/Reality Composer Pro.app" = {length = 20, bytes = 0x76e70a3a44ba1d0aff727c1226846161efda0091};
+        "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" = {length = 20, bytes = 0xbf51119f99d5155265b53c92d02164558963bd76};
+        "/System/Library/CoreServices/CoreTypes.bundle" = {length = 20, bytes = 0x8f0d409ae3086d3a948a23ab7a37e73c9325901a};
+    };
+    IDELastShownWhatsNewContentRevision = 3;
+    "IDELibrary.lastSelectedLibraryExtensionIDByEditorID" =     {
+        "" = "Xcode.DVTKit.Library.Capabilities";
+        "Xcode.Xcode3ProjectSupport.EditorDocument.Xcode3Project" = "Xcode.DVTKit.Library.Capabilities";
+    };
+    "IDELibraryWindowController-With-Details.height" = 449;
+    "IDELibraryWindowController-With-Details.location" =     {
+        horizontal =         {
+            anchor = 1;
+            distance = "-0.0002976190476190476";
+        };
+        vertical =         {
+            anchor = 1;
+            distance = "0.2494714587737843";
+        };
+    };
+    "IDELibraryWindowController-With-Details.width" = 681;
+    IDEModelAccessHasUserConsentForOnDeviceInteractions = 1;
+    "IDEPlatformsFirstLaunchPresentedSDKVersions-appletvos" =     (
+        22K152
+    );
+    "IDEPlatformsFirstLaunchPresentedSDKVersions-iphoneos" =     (
+        22C146
+    );
+    "IDEPlatformsFirstLaunchPresentedSDKVersions-macosx" =     (
+        24C94
+    );
+    "IDEPlatformsFirstLaunchPresentedSDKVersions-watchos" =     (
+        22S97
+    );
+    "IDEPlatformsFirstLaunchPresentedSDKVersions-xros" =     (
+        22N799
+    );
+    "IDEPlatformsFirstLaunchSelected-appletvos" = 1;
+    "IDEPlatformsFirstLaunchSelected-iphoneos" = 1;
+    "IDEPlatformsFirstLaunchSelected-watchos" = 1;
+    "IDEPlatformsFirstLaunchSelected-xros" = 1;
+    IDEProfileActionSelectedTab = Info;
+    IDEProvisioningTeamByIdentifier =     {
+        "6159C46E-D8FB-4266-8693-B16FCBB33EBA" =         (
+                        {
+                isFreeProvisioningTeam = 1;
+                teamID = 2A7R4ZP8WU;
+                teamName = "Yubin Chen (Personal Team)";
+                teamType = "Personal Team";
+            }
+        );
+        "9370E5E2-BAD8-40B8-A694-9419DF82B032" =         (
+                        {
+                isFreeProvisioningTeam = 1;
+                teamID = 7ZAQQ9X25G;
+                teamName = "\\U660e\\U864e \\U6797 (Personal Team)";
+                teamType = "Personal Team";
+            }
+        );
+    };
+    IDEProvisioningTeamManagerLastSelectedTeamID = 2A7R4ZP8WU;
+    IDERecentEditorDocuments =     (
+        {length = 1160, bytes = 0x626f6f6b 88040000 00000410 30000000 ... 68020000 00000000 },
+        {length = 1212, bytes = 0x626f6f6b bc040000 00000410 30000000 ... 88020000 00000000 },
+        {length = 1140, bytes = 0x626f6f6b 74040000 00000410 30000000 ... 60020000 00000000 },
+        {length = 1236, bytes = 0x626f6f6b d4040000 00000410 30000000 ... 84020000 00000000 },
+        {length = 1160, bytes = 0x626f6f6b 88040000 00000410 30000000 ... 68020000 00000000 },
+        {length = 1144, bytes = 0x626f6f6b 78040000 00000410 30000000 ... 60020000 00000000 },
+        {length = 1128, bytes = 0x626f6f6b 68040000 00000410 30000000 ... 58020000 00000000 },
+        {length = 1176, bytes = 0x626f6f6b 98040000 00000410 30000000 ... 70020000 00000000 },
+        {length = 1248, bytes = 0x626f6f6b e0040000 00000410 30000000 ... a4020000 00000000 },
+        {length = 1160, bytes = 0x626f6f6b 88040000 00000410 30000000 ... 58020000 00000000 }
+    );
+    IDERunActionSelectedTab = Info;
+    "IDERunSheetController_UIState" = {length = 514, bytes = 0x62706c69 73743030 d4010203 04050607 ... 00000000 0000017e };
+    "IDESourceControlHostAccounts_10" =     (
+    );
+    IDESourceControlModernKnownSSHHostsDefaultsKey =     {
+    };
+    IDESourceControlPreferencesVersion = 201;
+    IDESourceTreeDisplayNames =     {
+    };
+    IDESuppressSelectNewScheme = 1;
+    IDESuppressStopBuildWarning = 1;
+    IDESuppressStopExecutionWarning = 1;
+    IDESuppressStopExecutionWarningTarget = "IDESuppressStopExecutionWarningTargetValue_Stop";
+    IDESwiftPackageCollectionsAddedDefaultCollectionsDVTToolsVersion = "Xcode 16.2.0";
+    IDETemplateOptions =     {
+        includeConfigurationIntent = true;
+        includeControl = false;
+        includeLiveActivity = false;
+        languageChoice = Swift;
+    };
+    IDETestActionSelectedTab = Info;
+    "IDEXcodeDeviceSupportLastNotified-16C5032a" = 16C7011;
+    "IDE_CA_Daily_BuildClangStaticAnalyzer" = 1;
+    "IDE_CA_Daily_LanguageModel" = "enabled,usable";
+    "IDE_CA_Daily_LastReport" = "762325965.506907";
+    "IDE_CA_Daily_RunMTC" = 1;
+    LastExplicitInspectorVisibility = 1;
+    LastPersistenceCleanupDateKey = "2025-03-04 01:56:54 +0000";
+    NSFontPanelAttributes = "1, 0";
+    "NSTableView Columns v3 PlistColumns" = {length = 586, bytes = 0x62706c69 73743030 d4010203 04050607 ... 00000000 0000019c };
+    "NSTableView Sort Ordering v2 PlistColumns" = {length = 237, bytes = 0x62706c69 73743030 d4010203 04050607 ... 00000000 000000b5 };
+    "NSTableView Supports v2 PlistColumns" = 1;
+    "NSWindow Frame AppShortcutsEditorUI" = "590 118 650 800 0 0 1680 1025 ";
+    "NSWindow Frame IDEDownloadProgressWindow" = "1152 856 400 99 0 0 1680 1025 ";
+    "NSWindow Frame IDEEditSchemeWindow" = "228 316 933 504 0 0 1680 1025 ";
+    "NSWindow Frame IDEManageRunContextSheet" = "311 354 768 457 0 0 1680 1025 ";
+    "NSWindow Frame IDEPreferencesPanel" = "117 466 830 498 0 0 1680 1025 ";
+    "NSWindow Frame NSFontPanel" = "1016 279 445 235 0 0 1680 1025 ";
+    XCFontAndColorCurrentTheme = "Classic (Light).xccolortheme";
+    XCFontAndColorExcludedThemes =     (
+        "Bare.xccolortheme",
+        "Spartan.xccolortheme",
+        "Classic (Light).xccolortheme"
+    );
+    Xcode3ProjectEditorSourceListVisible = 1;
+    Xcode3ProjectTemplateChooserAssistantSelectedTemplateSection = Multiplatform;
+    "Xcode3TargetTemplateChooserAssistantSelectedTemplateName_iOS" = "Application Extension/Widget Extension";
+    Xcode3TargetTemplateChooserAssistantSelectedTemplateSection = "com.apple.platform.iphoneos";
+}

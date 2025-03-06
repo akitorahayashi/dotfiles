@@ -66,10 +66,10 @@ setup_zprofile() {
     echo "Homebrew のパス設定を更新中..."
     # zprofile シンボリックリンク
     rm -f "$HOME/.zprofile"
-    ln -s "$HOME/dotfiles/.zprofile" "$HOME/.zprofile"
+    ln -s "$HOME/dotfiles/shell/.zprofile" "$HOME/.zprofile"
 
-    if ! grep -q '/opt/homebrew/bin/brew shellenv' "$HOME/dotfiles/.zprofile"; then
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/dotfiles/.zprofile"
+    if ! grep -q '/opt/homebrew/bin/brew shellenv' "$HOME/dotfiles/shell/.zprofile"; then
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/dotfiles/shell/.zprofile"
     fi
 
     source "$HOME/.zprofile"
@@ -78,8 +78,8 @@ setup_zprofile() {
 
 # Git の設定を適用
 setup_git_config() {
-    ln -sf "${HOME}/dotfiles/.gitconfig" "${HOME}/.gitconfig"
-    ln -sf "${HOME}/dotfiles/.gitignore_global" "${HOME}/.gitignore_global"
+    ln -sf "${HOME}/dotfiles/git/.gitconfig" "${HOME}/.gitconfig"
+    ln -sf "${HOME}/dotfiles/git/.gitignore_global" "${HOME}/.gitignore_global"
     git config --global core.excludesfile "${HOME}/.gitignore_global"
     echo "Git 設定を適用しました ✅"
 }
@@ -87,13 +87,13 @@ setup_git_config() {
 # シェルの設定を適用
 setup_shell_config() {
     echo "シェルの設定を適用中..."
-    ln -sf "${HOME}/dotfiles/.zshrc" "${HOME}/.zshrc"
+    ln -sf "${HOME}/dotfiles/shell/.zshrc" "${HOME}/.zshrc"
     echo "シェルの設定の適用完了 ✅"
 }
 
 # Brewfile に記載されているパッケージをインストール
 install_brewfile() {
-    local brewfile_path="$HOME/dotfiles/Brewfile"
+    local brewfile_path="$HOME/dotfiles/config/Brewfile"
     
     if [[ ! -f "$brewfile_path" ]]; then
         echo "Warning: $brewfile_path が見つかりません。スキップします。"
@@ -166,8 +166,8 @@ setup_cursor() {
     fi
 
     # 設定の復元スクリプトが存在するか確認し、実行
-    if [[ -f "$HOME/dotfiles/restore_cursor_settings.sh" ]]; then
-        bash "$HOME/dotfiles/restore_cursor_settings.sh"
+    if [[ -f "$HOME/dotfiles/cursor/restore_cursor_settings.sh" ]]; then
+        bash "$HOME/dotfiles/cursor/restore_cursor_settings.sh"
     else
         echo "⚠ Cursor の復元スクリプトが見つかりません。設定の復元をスキップします。"
     fi
@@ -193,8 +193,8 @@ setup_cursor() {
 setup_xcode() {
     echo "🔄 Xcode の設定中..."
 
-    if [[ -f "$HOME/dotfiles/restore_xcode_settings.sh" ]]; then
-        bash "$HOME/dotfiles/restore_xcode_settings.sh"
+    if [[ -f "$HOME/dotfiles/xcode/restore_xcode_settings.sh" ]]; then
+        bash "$HOME/dotfiles/xcode/restore_xcode_settings.sh"
         echo "✅ Xcode 設定の適用が完了しました！"
     else
         echo "⚠ restore_xcode_settings.sh が見つかりません"
@@ -208,8 +208,8 @@ install_homebrew
 setup_zprofile
 
 # Mac のシステム設定を適用
-if [[ -f "$HOME/dotfiles/setup_mac_settings.sh" ]]; then
-    source "$HOME/dotfiles/setup_mac_settings.sh"
+if [[ -f "$HOME/dotfiles/macos/setup_mac_settings.sh" ]]; then
+    source "$HOME/dotfiles/macos/setup_mac_settings.sh"
 else
     echo "⚠ setup_mac_settings.sh が見つかりません"
 fi

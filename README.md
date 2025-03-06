@@ -3,6 +3,24 @@
 This repository provides `install.sh`, a script to automate macOS environment setup.  
 By running this script, you can apply Git configurations, install Homebrew, set up Xcode Command Line Tools, install various development tools, and configure SSH keys for GitHub.
 
+## Directory Structure
+
+```
+dotfiles/
+├── config/        # Configuration files
+│   └── Brewfile   # Homebrew package list
+├── cursor/        # Cursor IDE related settings
+├── git/           # Git related settings
+│   ├── .gitconfig
+│   └── .gitignore_global
+├── macos/         # macOS specific settings
+├── shell/         # Shell related settings
+│   ├── .zprofile
+│   └── .zshrc
+├── xcode/         # Xcode related settings
+└── install.sh     # Main installation script
+```
+
 # Setup Instructions
 
 ## 1. Clone the Repository
@@ -17,7 +35,7 @@ chmod +x install.sh
 ## 3. Update Git Configuration
 Before running the setup script, you need to update the Git configuration with your own name and email.
 
-Open `.gitconfig` using a text editor.
+Open `git/.gitconfig` using a text editor.
 
 Modify the lines with your own information.
 ## 4. Run the Setup Script
@@ -27,7 +45,7 @@ Modify the lines with your own information.
 This script will:
 - Install Homebrew & essential packages
 - Apply Git & macOS system settings
-- Restore VS Code settings & extensions
+- Restore Cursor settings
 - Configure Xcode & Flutter
 ## 5. Create and Register an SSH Key for GitHub
 If no SSH key exists, the script will generate one.
@@ -52,10 +70,10 @@ exec $SHELL -l
 
 # Workflow
 ## On Your Old Mac
-Back up VS Code & Xcode settings
+Back up Xcode & Cursor settings
 ```bash
-./backup_vscode_settings.sh
-./backup_xcode_settings.sh
+./xcode/backup_xcode_settings.sh
+./cursor/backup_cursor_settings.sh
 ```
 Commit & push to GitHub
 ## On Your New Mac
@@ -66,18 +84,18 @@ Clone your dotfiles & run the setup script
 Your Mac is now set up exactly like before! 🎉
 # Features
 ## 1. Git Configuration
-`dotfiles/.gitconfig` and `dotfiles/.gitignore_global` are symlinked to the home directory.
+`dotfiles/git/.gitconfig` and `dotfiles/git/.gitignore_global` are symlinked to the home directory.
 
 ## 2. Homebrew Installation
 Installs Homebrew if it is not already installed.
 Uses `/opt/homebrew` for Apple Silicon (ARM) devices.
 
 ## 3. Install Packages from Brewfile
-Installs packages listed in `Brewfile` using `brew bundle`.
+Installs packages listed in `config/Brewfile` using `brew bundle`.
 Main packages included:
 - **CLI Tools**: `git`, `gh`, `cocoapods`, `zsh`, `fdupes`
-- **Development Tools**: `visual-studio-code`, `android-studio`, `flutter`
-- **Other Apps**: `google-chrome`, `slack`, `spotify`, `zoom`, `notion`, `figma`, `cleanmymac`
+- **Development Tools**: `android-studio`, `flutter`, `cursor`
+- **Other Apps**: `google-chrome`, `slack`, `spotify`, `zoom`, `notion`, `figma`
 
 > **Note**: Xcode is **not installed via Homebrew**.  
 > Please install Xcode manually from the Mac App Store.
@@ -98,40 +116,35 @@ Generates a new SSH key (`id_ed25519`) if none exists.
 Adding the public key to GitHub allows passwordless `git push` operations.
 
 ## 8. macOS System Settings Application  
-Applies system settings from `setup_mac_settings.sh`, configuring:  
+Applies system settings from `macos/setup_mac_settings.sh`, configuring:  
 - Trackpad & mouse speed  
 - Keyboard repeat rate  
 - Dock preferences (size, auto-hide, hot corners)  
 - Finder settings (path bar, status bar, hidden files visibility)  
 - Screenshot save location
 
-## 9. VS Code Settings Backup & Restore
-### Backup VS Code Settings
+## 9. Cursor Settings Backup & Restore
+### Backup Cursor Settings
 ```bash
-./backup_vscode_settings.sh
+./cursor/backup_cursor_settings.sh
 ```
-This saves
-- `settings.json`
-- `keybindings.json`
-- Installed extensions (`extensions.txt`)
+This saves Cursor IDE settings and configurations.
 
-### Restore VS Code Settings
+### Restore Cursor Settings
 ```bash
-./restore_vscode_settings.sh
+./cursor/restore_cursor_settings.sh
 ```
-This will
-- Copy settings to the correct location
-- Install missing extensions (but skip already installed ones)
+This will restore your Cursor IDE settings.
 
 ## 10. Xcode Settings Backup & Restore
 ### Backup Xcode Settings
 ```bash
-./backup_xcode_settings.sh
+./xcode/backup_xcode_settings.sh
 ```
-Saves configurations to `dotfiles/.xcode/.`
+Saves configurations to `dotfiles/xcode/.`
 
 ### Restore Xcode Settings
 ```bash
-./restore_xcode_settings.sh
+./xcode/restore_xcode_settings.sh
 ```
 Restores them to `~/Library/Developer/Xcode/UserData/.`
